@@ -16,6 +16,7 @@
 //   - /api/v1/sites/:site_id/devices
 //   - /api/v1/sites/:site_id/stats/devices
 //   - /api/v1/sites/:site_id/stats/clients
+//   - /api/v1/sites/:site_id/rrm/events
 package mistclient
 
 import (

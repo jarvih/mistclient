@@ -181,3 +181,38 @@ func TestGetSiteClients(t *testing.T) {
 		}
 	}
 }
+
+func TestGetSiteRRMEvents(t *testing.T) {
+	c := newTestClient(t)
+
+	siteID := "test-site-id"
+	response, err := c.GetSiteRRMEvents(siteID, Band24, 1428939600, 1428954000, 100)
+	if err != nil {
+		t.Errorf("APIClient.GetSiteRRMEvents(%s): Threw error: %s", siteID, err)
+	}
+
+	if response.Start != 1428939600 {
+		t.Errorf("APIClient.GetSiteRRMEvents(%s).Start: expected 1428939600, got: %d", siteID, response.Start)
+	}
+	if response.End != 1428954000 {
+		t.Errorf("APIClient.GetSiteRRMEvents(%s).End: expected 1428954000, got: %d", siteID, response.End)
+	}
+	if response.Limit != 100 {
+		t.Errorf("APIClient.GetSiteRRMEvents(%s).Limit: expected 100, got: %d", siteID, response.Limit)
+	}
+
+	if len(response.Results) != 1 {
+		t.Errorf("APIClient.GetSiteRRMEvents(%s): expected 1 result, got: %d", siteID, len(response.Results))
+	} else {
+		event := response.Results[0]
+		if event.Channel != 6 {
+			t.Errorf("APIClient.GetSiteRRMEvents(%s)[0].Channel: expected 6, got: %d", siteID, event.Channel)
+		}
+		if event.Band != Band24 {
+			t.Errorf("APIClient.GetSiteRRMEvents(%s)[0].Band: expected Band24, got: %s", siteID, event.Band)
+		}
+		if event.Event != "scheduled-site_rrm" {
+			t.Errorf("APIClient.GetSiteRRMEvents(%s)[0].Event: expected 'scheduled-site_rrm', got: %s", siteID, event.Event)
+		}
+	}
+}

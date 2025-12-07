@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 // GetSiteStats fetches a site's operational statistics
@@ -100,4 +101,35 @@ func (c *APIClient) GetSiteClientStats(siteID string) ([]Client, error) {
 // StreamSiteClientStats opens a websocket connection and subscribes to the client statistics stream
 func (c *APIClient) StreamSiteClientStats(ctx context.Context, siteID string) (<-chan StreamedClientStat, error) {
 	return streamStats[StreamedClientStat](ctx, c, fmt.Sprintf("/sites/%s/stats/clients", siteID))
+}
+
+// GetSiteRRMEvents retrieves RRM events for a site within the specified time range for a specific radio band.
+// Parameters start and end are epoch timestamps. Use limit to control page size (default 100).
+// The band parameter specifies which radio band to query (Band24, Band5, or Band6).
+func (c *APIClient) GetSiteRRMEvents(siteID string, band Radio, start int64, end int64, limit int) (RRMEventsResponse, error) {
+	var response RRMEventsResponse
+
+	u := c.baseURL.JoinPath(fmt.Sprintf("/api/v1/sites/%s/rrm/events", siteID))
+
+	q := u.Query()
+	q.Add("band", band.APIString())
+	q.Add("start", strconv.FormatInt(start, 10))
+	q.Add("end", strconv.FormatInt(end, 10))
+	if limit > 0 {
+		q.Add("limit", strconv.Itoa(limit))
+	}
+	u.RawQuery = q.Encode()
+
+	resp, err := c.Get(u)
+	if err != nil {
+		return response, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return response, extractError(resp)
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	return response, err
 }

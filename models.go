@@ -326,6 +326,31 @@ type Airwatch struct {
 	Authorized bool `json:"authorized,omitempty"`
 }
 
+// RRMEvent represents a radio resource management event
+type RRMEvent struct {
+	APID         string      `json:"ap_id,omitempty"`
+	Band         Radio       `json:"band,omitempty"`
+	Bandwidth    int         `json:"bandwidth,omitempty"`
+	Channel      int         `json:"channel,omitempty"`
+	Event        string      `json:"event,omitempty"`
+	Power        int         `json:"power,omitempty"`
+	PreBandwidth int         `json:"pre_bandwidth,omitempty"`
+	PreChannel   int         `json:"pre_channel,omitempty"`
+	PrePower     int         `json:"pre_power,omitempty"`
+	PreUsage     int 	 `json:"pre_usage,omitempty"`
+	Timestamp    UnixTime    `json:"timestamp,omitzero"`
+	Usage        int  `json:"usage,omitempty"`
+}
+
+// RRMEventsResponse is the paginated response for RRM events
+type RRMEventsResponse struct {
+	Start   int64      `json:"start,omitempty"`
+	End     int64      `json:"end,omitempty"`
+	Limit   int        `json:"limit,omitempty"`
+	Next    string     `json:"next,omitempty"`
+	Results []RRMEvent `json:"results,omitempty"`
+}
+
 // StreamedDeviceStat holds information regarding a device returned by the websockets streaming stats API
 type StreamedDeviceStat struct {
 	Mac        string                            `json:"mac,omitempty"`

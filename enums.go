@@ -200,14 +200,31 @@ func (r Radio) String() string {
 	}
 }
 
+// APIString returns the Radio band in the format expected by the Mist API.
+// For Band24 this returns "24" (not "2.4") to match API requirements.
+// Use this method when constructing API requests (query parameters, etc).
+func (r Radio) APIString() string {
+	switch r {
+	case Band6:
+		return "6"
+	case Band5:
+		return "5"
+	case Band24:
+		return "24"
+	default:
+		return "unknown"
+	}
+}
+
 // RadioFromString creates a Radio from the associated string representation.
+// Accepts both "24" (API format) and "2.4" (display format) for Band24.
 func RadioFromString(r string) Radio {
 	switch r {
 	case "6":
 		return Band6
 	case "5":
 		return Band5
-	case "24":
+	case "24", "2.4":
 		return Band24
 	default:
 		return 0
