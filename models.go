@@ -337,9 +337,9 @@ type RRMEvent struct {
 	PreBandwidth int         `json:"pre_bandwidth,omitempty"`
 	PreChannel   int         `json:"pre_channel,omitempty"`
 	PrePower     int         `json:"pre_power,omitempty"`
-	PreUsage     int 	 `json:"pre_usage,omitempty"`
+	PreUsage     Radio       `json:"pre_usage,omitempty"`
 	Timestamp    UnixTime    `json:"timestamp,omitzero"`
-	Usage        int  `json:"usage,omitempty"`
+	Usage        Radio       `json:"usage,omitempty"`
 }
 
 // RRMEventsResponse is the paginated response for RRM events
